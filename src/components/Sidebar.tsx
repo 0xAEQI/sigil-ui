@@ -77,8 +77,9 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
             <path d="M2 3.5h10M2 7h10M2 10.5h10" />
           </svg>
         </button>
-        <Link to="/" className="sidebar-brand">Sigil</Link>
-        <button className="sidebar-cmd" onClick={onCommandPalette} title="Command palette (Cmd+K)">
+        <Link to="/settings" className="sidebar-avatar" title="Settings">L</Link>
+        <div className="sidebar-spacer" />
+        <button className="sidebar-cmd" onClick={onCommandPalette} title="Cmd+K">
           <kbd>K</kbd>
         </button>
       </div>
