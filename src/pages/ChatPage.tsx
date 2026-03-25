@@ -135,16 +135,10 @@ export default function ChatPage() {
 
   return (
     <div className="chat-home">
-      {/* Minimal header */}
+      {/* Header */}
       <div className="chat-home-header">
         <div className="chat-home-header-left">
-          <div className="chat-avatar">S</div>
-          <div>
-            <div className="chat-home-title">
-              Sigil
-              <span className="chat-home-channel">#{channelLabel}</span>
-            </div>
-          </div>
+          <span className="chat-home-channel">#{channelLabel}</span>
         </div>
         <div className="chat-home-agents">
           {channelAgents.slice(0, 6).map((a: any) => (
