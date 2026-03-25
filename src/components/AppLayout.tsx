@@ -5,10 +5,16 @@ import StatusBar from "./StatusBar";
 import CommandPalette from "./CommandPalette";
 import ContextPanel from "./ContextPanel";
 import { useUIStore } from "@/store/ui";
+import { useChatStore } from "@/store/chat";
 
 function Breadcrumbs() {
   const { pathname } = useLocation();
-  if (pathname === "/" || pathname === "/login") return null;
+  if (pathname === "/login") return null;
+
+  // Chat home
+  if (pathname === "/") {
+    return <ChatBreadcrumb />;
+  }
 
   const segments = pathname.split("/").filter(Boolean);
   const crumbs: { label: string; href: string }[] = [];
@@ -21,7 +27,7 @@ function Breadcrumbs() {
 
   return (
     <div className="breadcrumbs">
-      <Link to="/" className="breadcrumb-item">Home</Link>
+      <Link to="/" className="breadcrumb-item">Chat</Link>
       {crumbs.map((crumb, i) => (
         <span key={crumb.href} className="breadcrumb-segment">
           <span className="breadcrumb-sep">/</span>
@@ -32,6 +38,21 @@ function Breadcrumbs() {
           )}
         </span>
       ))}
+    </div>
+  );
+}
+
+function ChatBreadcrumb() {
+  const channel = useChatStore((s) => s.channel);
+  return (
+    <div className="breadcrumbs">
+      <span className={channel ? "breadcrumb-item" : "breadcrumb-current"} style={{ cursor: "default" }}>Chat</span>
+      {channel && (
+        <span className="breadcrumb-segment">
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-current">{channel.includes("/") ? channel.split("/").pop() : channel}</span>
+        </span>
+      )}
     </div>
   );
 }
@@ -66,7 +87,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className={`app-layout ${collapsed ? "app-layout-collapsed" : ""}`}>
         <Sidebar />
         <div className="main-wrapper">
-          {!isChatHome && <Breadcrumbs />}
+          <Breadcrumbs />
           <main className={`main-content ${isChatHome ? "main-content-chat" : ""}`}>
             {children}
           </main>
