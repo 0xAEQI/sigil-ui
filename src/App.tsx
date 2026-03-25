@@ -9,10 +9,8 @@ import TasksPage from "@/pages/TasksPage";
 import MissionsPage from "@/pages/MissionsPage";
 import AuditPage from "@/pages/AuditPage";
 import OperationsPage from "@/pages/OperationsPage";
-import BlackboardPage from "@/pages/BlackboardPage";
 import CostPage from "@/pages/CostPage";
 import SettingsPage from "@/pages/SettingsPage";
-import MemoryPage from "@/pages/MemoryPage";
 import SkillsPage from "@/pages/SkillsPage";
 import KnowledgePage from "@/pages/KnowledgePage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
@@ -35,7 +33,8 @@ export default function App() {
           <ProtectedRoute>
             <AppLayout>
               <Routes>
-                <Route path="/" element={<DashboardPage />} />
+                <Route path="/" element={<ChatPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/projects/:name" element={<ProjectDetailPage />} />
                 <Route path="/agents" element={<AgentsPage />} />
@@ -49,7 +48,6 @@ export default function App() {
                 <Route path="/skills" element={<SkillsPage />} />
                 <Route path="/blackboard" element={<KnowledgePage />} />
                 <Route path="/cost" element={<CostPage />} />
-                <Route path="/chat" element={<ChatPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
               </Routes>
             </AppLayout>
