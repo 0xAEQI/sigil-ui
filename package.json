@@ -1,7 +1,14 @@
 {
   "name": "entity-business",
+  "description": "Web dashboard for the Sigil AI agent orchestrator",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
+  "author": "0xAEQI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xAEQI/sigil-ui.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
