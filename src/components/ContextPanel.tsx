@@ -1,7 +1,96 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useChatStore } from "@/store/chat";
 import { api } from "@/lib/api";
+
+function NotesTab({ channel }: { channel: string | null }) {
+  const [content, setContent] = useState("");
+  const [directives, setDirectives] = useState<any[]>([]);
+  const [saving, setSaving] = useState(false);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const channelKey = channel || "global";
+
+  // Load note on channel change
+  useEffect(() => {
+    api.getNote(channelKey).then((d) => {
+      if (d.ok && d.note) {
+        setContent(d.note.content || "");
+        setDirectives(d.directives || []);
+      } else {
+        setContent("");
+        setDirectives([]);
+      }
+    }).catch(() => {});
+  }, [channelKey]);
+
+  // Auto-save on debounce (1.5s)
+  const handleChange = (value: string) => {
+    setContent(value);
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      setSaving(true);
+      api.saveNote({ channel: channelKey, content: value }).then((d) => {
+        if (d.ok && d.directives) setDirectives(d.directives);
+        setSaving(false);
+      }).catch(() => setSaving(false));
+    }, 1500);
+  };
+
+  return (
+    <div className="ctx-content">
+      <div className="ctx-section">
+        <div className="ctx-section-header">
+          <span className="ctx-section-title">Notes</span>
+          {saving && <span className="ctx-link">saving...</span>}
+        </div>
+        <textarea
+          className="ctx-notes-editor"
+          value={content}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="Write your directives here..."
+          rows={8}
+        />
+      </div>
+      {directives.length > 0 && (
+        <div className="ctx-section">
+          <div className="ctx-section-title">Directives</div>
+          <div className="ctx-list">
+            {directives.map((d: any) => (
+              <div key={d.id} className="ctx-directive">
+                <span className={`ctx-directive-status ctx-directive-${d.status}`}>
+                  {d.status === "pending" ? "\u25CB" : d.status === "active" ? "\u27F3" : d.status === "done" ? "\u2713" : "\u2717"}
+                </span>
+                <span className="ctx-directive-text">{d.content}</span>
+                {d.task_id && <code className="ctx-directive-task">{d.task_id}</code>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BriefTab() {
+  const [brief, setBrief] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.getBrief().then((d) => setBrief(d.brief || null)).catch(() => {});
+  }, []);
+
+  return (
+    <div className="ctx-content">
+      {brief ? (
+        <div className="ctx-section">
+          <div className="ctx-section-title">Daily Brief</div>
+          <pre className="ctx-brief">{brief}</pre>
+        </div>
+      ) : (
+        <div className="ctx-empty">No brief available</div>
+      )}
+    </div>
+  );
+}
 
 function GlobalContext() {
   const [brief, setBrief] = useState<string | null>(null);
@@ -188,19 +277,24 @@ function ProjectContext({ project }: { project: string }) {
 export default function ContextPanel() {
   const channel = useChatStore((s) => s.channel);
   const projectName = channel?.split("/")[0] || null;
+  const [tab, setTab] = useState<"notes" | "context" | "brief">("context");
 
   return (
     <aside className="context-panel">
       <div className="context-panel-header">
-        <span className="context-panel-title">
-          {channel ? `#${channel}` : "Overview"}
-        </span>
+        <button className={`ctx-tab ${tab === "notes" ? "ctx-tab-active" : ""}`} onClick={() => setTab("notes")}>Notes</button>
+        <button className={`ctx-tab ${tab === "context" ? "ctx-tab-active" : ""}`} onClick={() => setTab("context")}>Context</button>
+        <button className={`ctx-tab ${tab === "brief" ? "ctx-tab-active" : ""}`} onClick={() => setTab("brief")}>Brief</button>
       </div>
-      {projectName ? (
-        <ProjectContext project={projectName} />
-      ) : (
-        <GlobalContext />
+      {tab === "notes" && <NotesTab channel={channel} />}
+      {tab === "context" && (
+        projectName ? (
+          <ProjectContext project={projectName} />
+        ) : (
+          <GlobalContext />
+        )
       )}
+      {tab === "brief" && <BriefTab />}
     </aside>
   );
 }

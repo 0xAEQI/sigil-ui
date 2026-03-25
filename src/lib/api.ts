@@ -217,6 +217,16 @@ export const api = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+
+  // Notes
+  getNotes: () => request<any>("/notes"),
+  getNote: (channel: string) => request<any>(`/notes/${encodeURIComponent(channel)}`),
+  saveNote: (data: { channel: string; content: string }) =>
+    request<any>("/notes", { method: "POST", body: JSON.stringify(data) }),
+  deleteNote: (id: string) =>
+    request<any>(`/notes/${id}/delete`, { method: "DELETE" }),
+  updateDirectiveStatus: (id: string, data: { status: string; task_id?: string }) =>
+    request<any>(`/directives/${id}/status`, { method: "POST", body: JSON.stringify(data) }),
 };
 
 export { ApiError };
