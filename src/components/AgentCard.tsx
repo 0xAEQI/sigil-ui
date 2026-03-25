@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import { ROLE_LABELS } from "@/lib/constants";
 import type { Agent } from "@/lib/types";
@@ -11,7 +11,7 @@ interface AgentCardProps {
 export default function AgentCard({ agent, compact = false }: AgentCardProps) {
   if (compact) {
     return (
-      <Link href={`/agents/${agent.name}`} className="agent-card-compact">
+      <Link to={`/agents/${agent.name}`} className="agent-card-compact">
         <div className="agent-card-compact-header">
           <div className="agent-name-row">
             <code className="agent-prefix">{agent.prefix}</code>
@@ -30,7 +30,7 @@ export default function AgentCard({ agent, compact = false }: AgentCardProps) {
   }
 
   return (
-    <Link href={`/agents/${agent.name}`} className="agent-card">
+    <Link to={`/agents/${agent.name}`} className="agent-card">
       <div className="agent-card-header">
         <div>
           <div className="agent-name-row">

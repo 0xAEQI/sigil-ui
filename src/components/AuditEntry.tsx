@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import type { AuditEntry as AuditEntryType } from "@/lib/types";
 
 interface AuditEntryProps {
@@ -76,7 +76,7 @@ export default function AuditEntryComponent({
           >
             {formatDecisionType(entry.decision_type)}
           </span>
-          <Link href={`/projects/${entry.project}`} className="audit-project">
+          <Link to={`/projects/${entry.project}`} className="audit-project">
             {entry.project}
           </Link>
         </div>
@@ -89,7 +89,7 @@ export default function AuditEntryComponent({
 
       <div className="audit-entry-footer">
         {entry.agent && (
-          <Link href={`/agents/${entry.agent}`} className="audit-agent">
+          <Link to={`/agents/${entry.agent}`} className="audit-agent">
             {entry.agent}
           </Link>
         )}

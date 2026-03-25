@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import type { Project } from "@/lib/types";
 
 interface ProjectCardProps {
@@ -14,7 +14,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const completionPct = total > 0 ? (project.stats.done / total) * 100 : 0;
 
   return (
-    <Link href={`/projects/${project.name}`} className="project-card">
+    <Link to={`/projects/${project.name}`} className="project-card">
       <div className="project-card-header">
         <div>
           <div className="project-name-row">

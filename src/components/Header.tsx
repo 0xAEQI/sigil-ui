@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 interface Breadcrumb {
   label: string;
@@ -16,26 +14,24 @@ interface HeaderProps {
 export default function Header({ title, breadcrumbs, actions }: HeaderProps) {
   return (
     <header className="page-header">
-      <div className="header-content">
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <nav className="breadcrumbs">
-            {breadcrumbs.map((crumb, i) => (
-              <span key={i} className="breadcrumb-item">
-                {i > 0 && <span className="breadcrumb-sep">/</span>}
-                {crumb.href ? (
-                  <Link href={crumb.href} className="breadcrumb-link">
-                    {crumb.label}
-                  </Link>
-                ) : (
-                  <span className="breadcrumb-current">{crumb.label}</span>
-                )}
-              </span>
-            ))}
-          </nav>
-        )}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <div className="page-header-breadcrumbs">
+          {breadcrumbs.map((crumb, i) => (
+            <span key={i}>
+              {i > 0 && <span className="breadcrumb-sep"> / </span>}
+              {crumb.href ? (
+                <Link to={crumb.href}>{crumb.label}</Link>
+              ) : (
+                <span>{crumb.label}</span>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="page-header-row">
         <h1 className="page-title">{title}</h1>
+        {actions && <div className="page-header-actions">{actions}</div>}
       </div>
-      {actions && <div className="header-actions">{actions}</div>}
     </header>
   );
 }

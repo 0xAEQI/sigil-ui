@@ -4,12 +4,11 @@
 .pnp.*
 .yarn/install-state.gz
 
-# next.js
+# build output
+/dist
+/build
 /.next/
 /out/
-
-# production
-/build
 
 # misc
 .DS_Store

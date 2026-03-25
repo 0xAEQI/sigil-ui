@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import { PRIORITY_COLORS } from "@/lib/constants";
 import type { Task } from "@/lib/types";
@@ -8,7 +8,7 @@ interface TaskRowProps {
 }
 
 function timeAgo(dateStr: string): string {
-  const now = new Date("2026-03-22T12:00:00Z");
+  const now = new Date();
   const date = new Date(dateStr);
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
@@ -53,7 +53,7 @@ export default function TaskRow({ task }: TaskRowProps) {
 
         {task.assignee ? (
           <Link
-            href={`/agents/${task.assignee}`}
+            to={`/agents/${task.assignee}`}
             className="task-assignee"
           >
             {task.assignee}
@@ -62,7 +62,7 @@ export default function TaskRow({ task }: TaskRowProps) {
           <span className="task-unassigned">unassigned</span>
         )}
 
-        <Link href={`/projects/${task.project}`} className="task-project">
+        <Link to={`/projects/${task.project}`} className="task-project">
           {task.project}
         </Link>
 
