@@ -344,6 +344,46 @@ a:hover {
   flex-direction: column;
 }
 
+/* Split mode — draggable ratio */
+.main-panels-split {
+  display: flex;
+}
+
+.main-panels-split > .main-content {
+  width: var(--split-main, 65%);
+  flex: none;
+}
+
+.main-panels-split > .context-panel {
+  width: var(--split-ctx, 35%);
+  flex: none;
+}
+
+/* Resize handle */
+.resize-handle {
+  width: 4px;
+  cursor: col-resize;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+  transition: background var(--transition-fast);
+}
+
+.resize-handle:hover,
+.resize-handle:active {
+  background: var(--accent-dim);
+}
+
+.resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -3px;
+  right: -3px;
+}
+
 .main-panels-stack .context-panel {
   width: 100%;
   height: 40%;

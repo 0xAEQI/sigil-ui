@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import CommandPalette from "./CommandPalette";
@@ -6,6 +6,41 @@ import ContextPanel from "./ContextPanel";
 import { useUIStore, type LayoutMode } from "@/store/ui";
 import { useChatStore } from "@/store/chat";
 
+// ── Draggable divider ──
+function ResizeHandle() {
+  const setSplitRatio = useUIStore((s) => s.setSplitRatio);
+  const panelsRef = useRef<HTMLElement | null>(null);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    const panels = (e.target as HTMLElement).parentElement;
+    if (!panels) return;
+    panelsRef.current = panels;
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (!panelsRef.current) return;
+      const rect = panelsRef.current.getBoundingClientRect();
+      const ratio = (ev.clientX - rect.left) / rect.width;
+      setSplitRatio(ratio);
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }, [setSplitRatio]);
+
+  return <div className="resize-handle" onMouseDown={handleMouseDown} />;
+}
+
+// ── Layout picker ──
 function LayoutPicker() {
   const layout = useUIStore((s) => s.layout);
   const setLayout = useUIStore((s) => s.setLayout);
@@ -44,10 +79,10 @@ function LayoutPicker() {
   );
 }
 
+// ── Breadcrumbs ──
 function Breadcrumbs() {
   const { pathname } = useLocation();
   if (pathname === "/login") return null;
-
   if (pathname === "/") return <ChatBreadcrumb />;
 
   const segments = pathname.split("/").filter(Boolean);
@@ -94,11 +129,13 @@ function ChatBreadcrumb() {
   );
 }
 
+// ── Main layout ──
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const { pathname } = useLocation();
   const collapsed = useUIStore((s) => s.sidebarCollapsed);
   const layout = useUIStore((s) => s.layout);
+  const splitRatio = useUIStore((s) => s.splitRatio);
   const isChatHome = pathname === "/";
 
   const openPalette = useCallback(() => setPaletteOpen(true), []);
@@ -115,6 +152,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const showContext = isChatHome && layout !== "focus";
   const isStack = layout === "stack";
+  const isSplit = layout === "split" && isChatHome;
+
+  const panelStyle = isSplit ? {
+    "--split-main": `${splitRatio * 100}%`,
+    "--split-ctx": `${(1 - splitRatio) * 100}%`,
+  } as React.CSSProperties : undefined;
 
   return (
     <div className={`app-shell ${collapsed ? "app-shell-collapsed" : ""}`}>
@@ -122,11 +165,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <Sidebar onCommandPalette={openPalette} />
         <div className={`main-wrapper ${isStack && isChatHome ? "main-wrapper-stack" : ""}`}>
           <Breadcrumbs />
-          <div className={`main-panels ${isStack && isChatHome ? "main-panels-stack" : ""}`}>
+          <div
+            className={`main-panels ${isStack && isChatHome ? "main-panels-stack" : ""} ${isSplit ? "main-panels-split" : ""}`}
+            style={panelStyle}
+          >
             <main className={`main-content ${isChatHome ? "main-content-chat" : ""}`}>
               {children}
             </main>
-            {showContext && <ContextPanel />}
+            {showContext && (
+              <>
+                {isSplit && <ResizeHandle />}
+                <ContextPanel />
+              </>
+            )}
           </div>
         </div>
       </div>
