@@ -78,17 +78,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  const layout = useUIStore((s) => s.layout);
+  const showContext = isChatHome && layout !== "focus";
+  const isStack = layout === "stack";
+
   return (
     <div className={`app-shell ${collapsed ? "app-shell-collapsed" : ""}`}>
       <div className="app-layout">
         <Sidebar onCommandPalette={openPalette} />
-        <div className="main-wrapper">
+        <div className={`main-wrapper ${isStack && isChatHome ? "main-wrapper-stack" : ""}`}>
           <Breadcrumbs />
-          <main className={`main-content ${isChatHome ? "main-content-chat" : ""}`}>
-            {children}
-          </main>
+          <div className={`main-panels ${isStack && isChatHome ? "main-panels-stack" : ""}`}>
+            <main className={`main-content ${isChatHome ? "main-content-chat" : ""}`}>
+              {children}
+            </main>
+            {showContext && <ContextPanel />}
+          </div>
         </div>
-        {isChatHome && <ContextPanel />}
       </div>
       <CommandPalette open={paletteOpen} onClose={closePalette} />
     </div>

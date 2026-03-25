@@ -248,6 +248,108 @@ a:hover {
 .sidebar-dot-ok { background: var(--success); }
 .sidebar-dot-err { background: var(--error); }
 
+/* Layout picker */
+.layout-picker-wrapper {
+  position: relative;
+  margin-top: var(--space-2);
+}
+
+.layout-picker-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-family: var(--font-sans);
+  transition: all var(--transition-fast);
+}
+
+.layout-picker-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-secondary);
+}
+
+.layout-picker-label { flex: 1; text-align: left; }
+
+.layout-picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.layout-picker-dropdown {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  z-index: 51;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.layout-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-sans);
+  transition: all var(--transition-fast);
+}
+
+.layout-option:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.layout-option-active {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* Panel layout modes */
+.main-panels {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.main-panels-stack {
+  flex-direction: column;
+}
+
+.main-panels-stack .context-panel {
+  width: 100%;
+  height: 40%;
+  border-left: none;
+  border-top: 1px solid var(--border);
+}
+
+.main-panels-stack .main-content {
+  flex: 1;
+}
+
+.main-wrapper-stack {
+  display: flex;
+  flex-direction: column;
+}
+
 .sidebar-collapsed-nav {
   display: flex;
   flex-direction: column;

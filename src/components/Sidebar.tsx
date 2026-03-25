@@ -137,7 +137,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
         ))}
       </div>
 
-      {/* Footer — metrics */}
+      {/* Footer — metrics + layout */}
       <div className="sidebar-bottom">
         <div className="sidebar-metrics">
           <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
@@ -146,6 +146,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
           <span className="sidebar-metric">${Number(spent).toFixed(2)}</span>
           <span className="sidebar-metric-dim">/{Number(budget).toFixed(0)}</span>
         </div>
+        <LayoutPicker />
       </div>
     </aside>
   );
@@ -172,6 +173,53 @@ const NAV_ITEMS = [
   { href: "/cost", label: "Cost", icon: "dollar" },
   { href: "/settings", label: "Settings", icon: "gear" },
 ];
+
+function LayoutPicker() {
+  const layout = useUIStore((s) => s.layout);
+  const setLayout = useUIStore((s) => s.setLayout);
+  const pickerOpen = useUIStore((s) => s.layoutPickerOpen);
+  const togglePicker = useUIStore((s) => s.toggleLayoutPicker);
+  const closePicker = useUIStore((s) => s.closeLayoutPicker);
+
+  return (
+    <div className="layout-picker-wrapper">
+      <button className="layout-picker-btn" onClick={togglePicker} title="Layout">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="1" y="1" width="12" height="12" rx="1" />
+          <path d="M6 1v12" />
+        </svg>
+        <span className="layout-picker-label">Layout</span>
+      </button>
+      {pickerOpen && (
+        <>
+          <div className="layout-picker-backdrop" onClick={closePicker} />
+          <div className="layout-picker-dropdown">
+            <button className={`layout-option ${layout === "focus" ? "layout-option-active" : ""}`} onClick={() => setLayout("focus")}>
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="1">
+                <rect x="0.5" y="0.5" width="19" height="13" rx="1" />
+              </svg>
+              <span>Focus</span>
+            </button>
+            <button className={`layout-option ${layout === "split" ? "layout-option-active" : ""}`} onClick={() => setLayout("split")}>
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="1">
+                <rect x="0.5" y="0.5" width="19" height="13" rx="1" />
+                <path d="M13 0.5v13" />
+              </svg>
+              <span>Split</span>
+            </button>
+            <button className={`layout-option ${layout === "stack" ? "layout-option-active" : ""}`} onClick={() => setLayout("stack")}>
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="1">
+                <rect x="0.5" y="0.5" width="19" height="13" rx="1" />
+                <path d="M0.5 7h19" />
+              </svg>
+              <span>Stack</span>
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 function NavIcon({ name }: { name: string }) {
   const icons: Record<string, React.ReactNode> = {
