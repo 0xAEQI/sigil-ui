@@ -3,23 +3,57 @@ import { useLocation, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import CommandPalette from "./CommandPalette";
 import ContextPanel from "./ContextPanel";
-import { useUIStore } from "@/store/ui";
+import { useUIStore, type LayoutMode } from "@/store/ui";
 import { useChatStore } from "@/store/chat";
+
+function LayoutPicker() {
+  const layout = useUIStore((s) => s.layout);
+  const setLayout = useUIStore((s) => s.setLayout);
+  const pickerOpen = useUIStore((s) => s.layoutPickerOpen);
+  const togglePicker = useUIStore((s) => s.toggleLayoutPicker);
+  const closePicker = useUIStore((s) => s.closeLayoutPicker);
+
+  const options: { mode: LayoutMode; label: string; icon: React.ReactNode }[] = [
+    { mode: "focus", label: "Focus", icon: <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" strokeWidth="1"><rect x="0.5" y="0.5" width="15" height="10" rx="1" /></svg> },
+    { mode: "split", label: "Split", icon: <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" strokeWidth="1"><rect x="0.5" y="0.5" width="15" height="10" rx="1" /><path d="M11 0.5v10" /></svg> },
+    { mode: "stack", label: "Stack", icon: <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" strokeWidth="1"><rect x="0.5" y="0.5" width="15" height="10" rx="1" /><path d="M0.5 6h15" /></svg> },
+  ];
+
+  return (
+    <div className="layout-picker-wrapper">
+      <button className="layout-picker-trigger" onClick={togglePicker} title="Layout">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="1" y="1" width="12" height="12" rx="1" />
+          <path d="M6 1v12" />
+        </svg>
+      </button>
+      {pickerOpen && (
+        <>
+          <div className="layout-picker-backdrop" onClick={closePicker} />
+          <div className="layout-picker-dropdown layout-picker-dropdown-down">
+            {options.map((opt) => (
+              <button key={opt.mode} className={`layout-option ${layout === opt.mode ? "layout-option-active" : ""}`} onClick={() => setLayout(opt.mode)}>
+                {opt.icon}
+                <span>{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 function Breadcrumbs() {
   const { pathname } = useLocation();
   if (pathname === "/login") return null;
 
-  if (pathname === "/") {
-    return <ChatBreadcrumb />;
-  }
+  if (pathname === "/") return <ChatBreadcrumb />;
 
   const segments = pathname.split("/").filter(Boolean);
   const crumbs: { label: string; href: string }[] = [];
-
   for (let i = 0; i < segments.length; i++) {
-    const href = "/" + segments.slice(0, i + 1).join("/");
-    crumbs.push({ label: segments[i], href });
+    crumbs.push({ label: segments[i], href: "/" + segments.slice(0, i + 1).join("/") });
   }
 
   return (
@@ -35,6 +69,9 @@ function Breadcrumbs() {
           )}
         </span>
       ))}
+      <div className="topbar-right">
+        <LayoutPicker />
+      </div>
     </div>
   );
 }
@@ -50,6 +87,9 @@ function ChatBreadcrumb() {
           <span className="breadcrumb-current">{channel.includes("/") ? channel.split("/").pop() : channel}</span>
         </span>
       )}
+      <div className="topbar-right">
+        <LayoutPicker />
+      </div>
     </div>
   );
 }
@@ -58,6 +98,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const { pathname } = useLocation();
   const collapsed = useUIStore((s) => s.sidebarCollapsed);
+  const layout = useUIStore((s) => s.layout);
   const isChatHome = pathname === "/";
 
   const openPalette = useCallback(() => setPaletteOpen(true), []);
@@ -65,20 +106,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setPaletteOpen((prev) => !prev);
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
-        e.preventDefault();
-        useUIStore.getState().toggleSidebar();
-      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setPaletteOpen((p) => !p); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "b") { e.preventDefault(); useUIStore.getState().toggleSidebar(); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const layout = useUIStore((s) => s.layout);
   const showContext = isChatHome && layout !== "focus";
   const isStack = layout === "stack";
 

@@ -248,34 +248,32 @@ a:hover {
 .sidebar-dot-ok { background: var(--success); }
 .sidebar-dot-err { background: var(--error); }
 
-/* Layout picker */
-.layout-picker-wrapper {
-  position: relative;
-  margin-top: var(--space-2);
-}
-
-.layout-picker-btn {
+/* Topbar right section */
+.topbar-right {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: 100%;
+}
+
+/* Layout picker */
+.layout-picker-wrapper {
+  position: relative;
+}
+
+.layout-picker-trigger {
   background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-2);
+  border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 10px;
-  font-family: var(--font-sans);
-  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
 }
 
-.layout-picker-btn:hover {
-  border-color: var(--accent-dim);
-  color: var(--text-secondary);
-}
-
-.layout-picker-label { flex: 1; text-align: left; }
+.layout-picker-trigger:hover { color: var(--text-primary); }
 
 .layout-picker-backdrop {
   position: fixed;
@@ -285,8 +283,6 @@ a:hover {
 
 .layout-picker-dropdown {
   position: absolute;
-  bottom: calc(100% + 4px);
-  left: 0;
   right: 0;
   background: var(--bg-elevated);
   border: 1px solid var(--border-hover);
@@ -294,6 +290,11 @@ a:hover {
   padding: var(--space-1);
   z-index: 51;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 100px;
+}
+
+.layout-picker-dropdown-down {
+  top: calc(100% + 4px);
 }
 
 .layout-option {
