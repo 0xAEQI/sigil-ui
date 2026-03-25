@@ -25,7 +25,7 @@ export default function ChatPage() {
         return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
       } catch { /* ignore */ }
     }
-    return [{ role: "system" as const, content: "What are we working on?", timestamp: new Date() }];
+    return [{ role: "system" as const, content: "Ready.", timestamp: new Date() }];
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -138,10 +138,10 @@ export default function ChatPage() {
       {/* Minimal header */}
       <div className="chat-home-header">
         <div className="chat-home-header-left">
-          <div className="chat-avatar">零</div>
+          <div className="chat-avatar">S</div>
           <div>
             <div className="chat-home-title">
-              Rei
+              Sigil
               <span className="chat-home-channel">#{channelLabel}</span>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function ChatPage() {
       <div className="chat-home-messages">
         {messages.map((msg, i) => (
           <div key={i} className={`chat-msg chat-msg-${msg.role}`}>
-            {msg.role === "assistant" && <div className="chat-msg-avatar">零</div>}
+            {msg.role === "assistant" && <div className="chat-msg-avatar">S</div>}
             <div className="chat-msg-bubble">
               <pre className="chat-msg-content">{msg.content}</pre>
               {msg.data?.cost && (
@@ -178,7 +178,7 @@ export default function ChatPage() {
         ))}
         {loading && (
           <div className="chat-msg chat-msg-assistant">
-            <div className="chat-msg-avatar">零</div>
+            <div className="chat-msg-avatar">S</div>
             <div className="chat-msg-bubble">
               <div className="chat-typing"><span /><span /><span /></div>
             </div>
@@ -193,7 +193,7 @@ export default function ChatPage() {
         <textarea
           ref={inputRef}
           className="chat-input"
-          placeholder={channel ? `Message #${channel.split("/").pop()}...` : "Talk to Rei..."}
+          placeholder={channel ? `Message #${channel.split("/").pop()}...` : "What needs to happen?"}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}

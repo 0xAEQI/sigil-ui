@@ -108,7 +108,7 @@ export default function DashboardPage() {
       {/* Daily Brief */}
       {brief && (
         <div className="dash-brief">
-          <div className="dash-brief-avatar">零</div>
+          <div className="dash-brief-avatar">S</div>
           <pre className="dash-brief-text">{brief}</pre>
         </div>
       )}

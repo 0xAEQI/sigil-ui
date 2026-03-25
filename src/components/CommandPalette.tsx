@@ -26,7 +26,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
     // Build items from API data
     const buildItems = async () => {
       const navItems: PaletteItem[] = [
-        { id: "nav-chat", label: "Chat", hint: "Talk to Rei", section: "Navigate", action: () => go("/") },
+        { id: "nav-chat", label: "Chat", hint: "Home", section: "Navigate", action: () => go("/") },
         { id: "nav-dashboard", label: "Dashboard", hint: "Command center", section: "Navigate", action: () => go("/dashboard") },
         { id: "nav-tasks", label: "Tasks", hint: "View all tasks", section: "Navigate", action: () => go("/tasks") },
         { id: "nav-missions", label: "Missions", hint: "Mission tracker", section: "Navigate", action: () => go("/missions") },

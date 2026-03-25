@@ -1019,6 +1019,22 @@ a:hover {
   padding: var(--space-8);
   width: 380px;
   max-width: 90vw;
+  text-align: center;
+}
+
+.login-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #d4a96a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+  color: var(--bg-primary);
+  margin: 0 auto var(--space-4);
 }
 
 .login-title {

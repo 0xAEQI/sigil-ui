@@ -60,7 +60,7 @@ export default function Sidebar() {
           onClick={() => { switchChannel(null); }}
         >
           <Link to="/" className="channel-link">
-            <span className="channel-icon">零</span>
+            <span className="channel-icon">S</span>
             <span className="channel-name">Sigil</span>
             <span className="channel-agents">{getChannelAgentCount(null)}</span>
           </Link>

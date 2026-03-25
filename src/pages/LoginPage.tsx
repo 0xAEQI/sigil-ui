@@ -16,20 +16,21 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
+        <div className="login-avatar">S</div>
         <h1 className="login-title">Sigil</h1>
-        <p className="login-subtitle">Agent Orchestration</p>
+        <p className="login-subtitle">Your shadow awaits</p>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             className="login-input"
             type="password"
-            placeholder="Enter access secret"
+            placeholder="Access key"
             value={secret}
             onChange={(e) => setSecret(e.target.value)}
             autoFocus
           />
           {error && <div className="login-error">{error}</div>}
           <button className="btn btn-primary" type="submit" disabled={loading}>
-            {loading ? "Authenticating..." : "Login"}
+            {loading ? "..." : "Enter"}
           </button>
         </form>
       </div>
