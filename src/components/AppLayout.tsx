@@ -27,7 +27,7 @@ function Breadcrumbs() {
 
   return (
     <div className="breadcrumbs">
-      <Link to="/" className="breadcrumb-item">chat</Link>
+      <Link to="/" className="breadcrumb-item">sigil</Link>
       {crumbs.map((crumb, i) => (
         <span key={crumb.href} className="breadcrumb-segment">
           <span className="breadcrumb-sep">/</span>
@@ -46,7 +46,7 @@ function ChatBreadcrumb() {
   const channel = useChatStore((s) => s.channel);
   return (
     <div className="breadcrumbs">
-      <span className={channel ? "breadcrumb-item" : "breadcrumb-current"} style={{ cursor: "default" }}>chat</span>
+      <span className={channel ? "breadcrumb-item" : "breadcrumb-current"} style={{ cursor: "default" }}>sigil</span>
       {channel && (
         <span className="breadcrumb-segment">
           <span className="breadcrumb-sep">/</span>
