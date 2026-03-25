@@ -431,6 +431,13 @@ a:hover {
   align-items: center;
 }
 
+.breadcrumb-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 /* Header */
 .page-header {
   margin-bottom: var(--space-8);
@@ -3378,35 +3385,13 @@ a:hover {
   border-radius: var(--radius-lg);
 }
 
-/* Header */
-.c-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-6);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  min-height: 40px;
-}
-
-.c-header-channel {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.c-header-agents {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
+/* Chat header agents (inside breadcrumb bar) */
 .c-header-avatar {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--bg-hover);
-  border: 2px solid var(--bg-primary);
+  border: 2px solid var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3711,7 +3696,7 @@ a:hover {
 
 .c-composer-inner {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--space-2);
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -3730,8 +3715,8 @@ a:hover {
   background: var(--accent-bg);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
-  align-self: center;
   flex-shrink: 0;
+  line-height: 1.5;
 }
 
 .c-textarea {
@@ -3742,10 +3727,10 @@ a:hover {
   font-family: var(--font-sans);
   font-size: var(--font-size-sm);
   resize: none;
-  min-height: 24px;
+  min-height: 22px;
   max-height: 160px;
-  line-height: 1.5;
-  padding: 2px 0;
+  line-height: 22px;
+  padding: 0;
 }
 
 .c-textarea:focus { outline: none; }
@@ -3755,7 +3740,6 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  align-self: flex-end;
 }
 
 .c-composer-hint {

@@ -305,17 +305,23 @@ export default function ChatPage() {
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
     >
-      {/* Header */}
-      <div className="c-header">
-        <span className="c-header-channel">#{channel || "Sigil"}</span>
-        <div className="c-header-agents">
+      {/* Header — matches breadcrumb bar on other pages */}
+      <div className="breadcrumbs">
+        <span className="breadcrumb-current">Chat</span>
+        {channel && (
+          <>
+            <span className="breadcrumb-sep">/</span>
+            <span className="breadcrumb-current">{channel.split("/").pop()}</span>
+          </>
+        )}
+        <div className="breadcrumb-right">
           {channelAgents.slice(0, 6).map((a: any) => (
             <span key={a.name} className="c-header-avatar" title={`${a.name} (${a.role})`}>
               {a.name[0].toUpperCase()}
             </span>
           ))}
           {channelAgents.length > 0 && (
-            <span className="c-header-count">{channelAgents.length} agents</span>
+            <span className="c-header-count">{channelAgents.length}</span>
           )}
         </div>
       </div>
