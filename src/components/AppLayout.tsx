@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import StatusBar from "./StatusBar";
 import CommandPalette from "./CommandPalette";
 import ContextPanel from "./ContextPanel";
 import { useUIStore } from "@/store/ui";
@@ -11,7 +10,6 @@ function Breadcrumbs() {
   const { pathname } = useLocation();
   if (pathname === "/login") return null;
 
-  // Chat home
   if (pathname === "/") {
     return <ChatBreadcrumb />;
   }
@@ -21,12 +19,11 @@ function Breadcrumbs() {
 
   for (let i = 0; i < segments.length; i++) {
     const href = "/" + segments.slice(0, i + 1).join("/");
-    const label = segments[i];
-    crumbs.push({ label, href });
+    crumbs.push({ label: segments[i], href });
   }
 
   return (
-    <div className="breadcrumbs">
+    <div className="topbar">
       <Link to="/" className="breadcrumb-item">sigil</Link>
       {crumbs.map((crumb, i) => (
         <span key={crumb.href} className="breadcrumb-segment">
@@ -45,7 +42,7 @@ function Breadcrumbs() {
 function ChatBreadcrumb() {
   const channel = useChatStore((s) => s.channel);
   return (
-    <div className="breadcrumbs">
+    <div className="topbar">
       <span className={channel ? "breadcrumb-item" : "breadcrumb-current"} style={{ cursor: "default" }}>sigil</span>
       {channel && (
         <span className="breadcrumb-segment">
@@ -82,10 +79,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="app-shell">
-      <StatusBar onCommandPalette={openPalette} />
-      <div className={`app-layout ${collapsed ? "app-layout-collapsed" : ""}`}>
-        <Sidebar />
+    <div className={`app-shell ${collapsed ? "app-shell-collapsed" : ""}`}>
+      <div className="app-layout">
+        <Sidebar onCommandPalette={openPalette} />
         <div className="main-wrapper">
           <Breadcrumbs />
           <main className={`main-content ${isChatHome ? "main-content-chat" : ""}`}>
