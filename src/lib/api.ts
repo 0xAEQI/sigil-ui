@@ -14,6 +14,19 @@ function getToken(): string | null {
   return localStorage.getItem("sigil_token");
 }
 
+async function parseResponseBody(res: Response): Promise<any> {
+  const contentType = res.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    return null;
+  }
+
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${path}`;
   const token = getToken();
@@ -26,6 +39,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   }
 
   const res = await fetch(url, { ...options, headers });
+  const body = await parseResponseBody(res);
 
   if (res.status === 401) {
     localStorage.removeItem("sigil_token");
@@ -34,10 +48,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   }
 
   if (!res.ok) {
-    throw new ApiError(res.status, `API error: ${res.statusText}`);
+    const message =
+      body?.error ||
+      body?.message ||
+      `API error: ${res.statusText}`;
+    throw new ApiError(res.status, message);
   }
 
-  return res.json();
+  return body as T;
 }
 
 export const api = {
@@ -162,40 +180,44 @@ export const api = {
   // Health
   getHealth: () => request<any>("/health"),
 
-  // Chat — quick path (instant responses for intents + status queries)
-  chat: (message: string, project?: string | null) =>
-    request<any>("/chat", {
-      method: "POST",
-      body: JSON.stringify({ message, ...(project ? { project } : {}) }),
-    }),
-
-  // Chat — full path (spawns agent execution, returns task handle for polling)
-  chatFull: (message: string, project?: string | null, sessionId?: string) =>
+  // Chat — canonical path
+  chatFull: (params: {
+    message: string;
+    project?: string | null;
+    department?: string | null;
+    channelName?: string | null;
+    chatId?: number;
+    sender?: string;
+  }) =>
     request<any>("/chat/full", {
       method: "POST",
       body: JSON.stringify({
-        message,
-        ...(project ? { project } : {}),
-        ...(sessionId ? { session_id: sessionId } : {}),
+        message: params.message,
+        ...(params.project ? { project: params.project } : {}),
+        ...(params.department ? { department: params.department } : {}),
+        ...(params.channelName ? { channel_name: params.channelName } : {}),
+        ...(params.chatId ? { chat_id: params.chatId } : {}),
+        ...(params.sender ? { sender: params.sender } : {}),
       }),
     }),
 
-  // Chat — poll for completion of a full-path task
-  chatPoll: (taskId: string) =>
-    request<any>(`/chat/poll/${taskId}`),
-
-  // Chat — get conversation history
-  chatHistory: (params?: { chatId?: number; sessionId?: string; limit?: number }) => {
+  // Chat — typed thread timeline
+  chatTimeline: (params?: {
+    chatId?: number;
+    project?: string | null;
+    department?: string | null;
+    channelName?: string | null;
+    limit?: number;
+  }) => {
     const query = new URLSearchParams();
     if (params?.chatId) query.set("chat_id", String(params.chatId));
-    if (params?.sessionId) query.set("session_id", params.sessionId);
+    if (params?.project) query.set("project", params.project);
+    if (params?.department) query.set("department", params.department);
+    if (params?.channelName) query.set("channel_name", params.channelName);
     if (params?.limit) query.set("limit", String(params.limit));
     const qs = query.toString();
-    return request<any>(`/chat/history${qs ? `?${qs}` : ""}`);
+    return request<any>(`/chat/timeline${qs ? `?${qs}` : ""}`);
   },
-
-  // Chat — list all channels
-  chatChannels: () => request<any>("/chat/channels"),
 
   // Write: Create Task
   createTask: (data: { project: string; subject: string; description?: string }) =>

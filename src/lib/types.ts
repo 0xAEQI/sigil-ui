@@ -76,3 +76,18 @@ export interface DashboardStats {
   recent_activity: AuditEntry[];
   active_agents: Agent[];
 }
+
+export interface ThreadEvent {
+  id: number;
+  chat_id: number;
+  event_type: string;
+  role: string;
+  content: string;
+  timestamp: string;
+  source?: string | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface ChatThreadState {
+  chatId?: number;
+}

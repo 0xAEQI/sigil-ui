@@ -108,7 +108,11 @@ export default function DashboardPage() {
       {/* Daily Brief */}
       {brief && (
         <div className="dash-brief">
-          <div className="dash-brief-avatar">S</div>
+          <div className="dash-brief-avatar">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 5l5-3 5 3" /><path d="M3 5v6l5 3 5-3V5" /><path d="M8 8v6" /><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+          </div>
           <pre className="dash-brief-text">{brief}</pre>
         </div>
       )}

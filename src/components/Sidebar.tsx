@@ -65,7 +65,6 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
         </nav>
         <div className="sidebar-bottom-collapsed">
           <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
-          {wsConnected && <span className="sidebar-live-dot" title="WebSocket live" />}
         </div>
       </aside>
     );
@@ -80,23 +79,22 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
             <path d="M2 3.5h10M2 7h10M2 10.5h10" />
           </svg>
         </button>
-        <Link to="/settings" className="sidebar-avatar" title="Settings">L</Link>
+        <Link to="/" className="sidebar-brand">sigil</Link>
         <div className="sidebar-spacer" />
         <button className="sidebar-cmd" onClick={onCommandPalette} title="Cmd+K">
           <kbd>K</kbd>
         </button>
       </div>
 
-      {/* Channels */}
+      {/* Chat channels */}
       <div className="sidebar-channels">
-        <div className="sidebar-section-label">Channels</div>
         <div
           className={`channel-item ${isChatHome && channel === null ? "channel-item-active" : ""}`}
           onClick={() => setChannel(null)}
         >
           <Link to="/" className="channel-link">
-            <span className="channel-icon">S</span>
-            <span className="channel-name">Sigil</span>
+            <span className="channel-hash">#</span>
+            <span className="channel-name">sigil</span>
           </Link>
         </div>
         {projects.map((p: any) => (
@@ -106,7 +104,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
               onClick={() => setChannel(p.name)}
             >
               <Link to="/" className="channel-link">
-                <span className="channel-dot" />
+                <span className="channel-hash">#</span>
                 <span className="channel-name">{p.name}</span>
                 {(p.open_tasks || 0) > 0 && <span className="channel-count">{p.open_tasks}</span>}
               </Link>
@@ -126,9 +124,8 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
         ))}
       </div>
 
-      {/* Navigation */}
+      {/* Pages */}
       <div className="sidebar-nav">
-        <div className="sidebar-section-label">Navigate</div>
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
@@ -141,16 +138,10 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
         ))}
       </div>
 
-      {/* Footer — metrics + layout */}
+      {/* Footer — version */}
       <div className="sidebar-bottom">
-        <div className="sidebar-metrics">
-          <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
-          {wsConnected && <span className="sidebar-live"><span className="sidebar-live-dot" />live</span>}
-          <span className="sidebar-metric">{activeTasks} active</span>
-          <span className="sidebar-metric-sep" />
-          <span className="sidebar-metric">${Number(spent).toFixed(2)}</span>
-          <span className="sidebar-metric-dim">/{Number(budget).toFixed(0)}</span>
-        </div>
+        <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
+        <span className="sidebar-version">v0.2.0</span>
       </div>
     </aside>
   );
