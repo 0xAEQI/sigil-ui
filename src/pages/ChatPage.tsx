@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { api } from "@/lib/api";
 import { useChatStore } from "@/store/chat";
+import { useWebSocket, type WorkerEvent } from "@/hooks/useWebSocket";
 
 interface Message {
   id: string;
@@ -295,6 +296,23 @@ export default function ChatPage() {
     return agents;
   })();
 
+  const { events: workerEvents } = useWebSocket();
+
+  // Deduplicate by task_id, keeping latest event per task for active work
+  const activeWorkerEvents = (() => {
+    const byTask = new Map<string, WorkerEvent>();
+    for (const e of workerEvents) {
+      if (e.task_id && (e.event_type === "TaskStarted" || e.event_type === "Progress")) {
+        byTask.set(e.task_id, e);
+      }
+      // Remove completed/failed tasks from active display
+      if (e.task_id && (e.event_type === "TaskCompleted" || e.event_type === "TaskFailed")) {
+        byTask.delete(e.task_id);
+      }
+    }
+    return Array.from(byTask.values());
+  })();
+
   const hasMessages = messages.filter((m) => m.role !== "system").length > 0;
   const canSend = input.trim().length > 0 && !loading;
 
@@ -318,6 +336,21 @@ export default function ChatPage() {
         ))}
         {loading && <TypingIndicator />}
       </div>
+
+      {/* Active worker events */}
+      {activeWorkerEvents.length > 0 && (
+        <div className="c-worker-bar">
+          {activeWorkerEvents.map((e) => (
+            <div key={e.task_id} className="c-worker-event">
+              <span className="c-worker-dot" />
+              <span className="c-worker-agent">{e.agent}</span>
+              <span className="c-worker-task">{e.task_id}</span>
+              {e.turns != null && <span className="c-worker-turns">{e.turns} turns</span>}
+              {e.cost_usd != null && <span className="c-worker-cost">${e.cost_usd.toFixed(3)}</span>}
+            </div>
+          ))}
+        </div>
+      )}
 
       <ScrollAnchor show={showScroll} onClick={scrollToBottom} />
 

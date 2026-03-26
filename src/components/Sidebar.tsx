@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useChatStore } from "@/store/chat";
 import { useUIStore } from "@/store/ui";
 import { useDaemonStore } from "@/store/daemon";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { api } from "@/lib/api";
 
 export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => void }) {
@@ -31,6 +32,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
     return () => clearInterval(interval);
   }, [fetchStatus]);
 
+  const { connected: wsConnected } = useWebSocket();
   const daemonOk = status?.ok === true;
   const isChatHome = pathname === "/";
   const spent = cost?.spent_today_usd ?? 0;
@@ -63,6 +65,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
         </nav>
         <div className="sidebar-bottom-collapsed">
           <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
+          {wsConnected && <span className="sidebar-live-dot" title="WebSocket live" />}
         </div>
       </aside>
     );
@@ -142,6 +145,7 @@ export default function Sidebar({ onCommandPalette }: { onCommandPalette: () => 
       <div className="sidebar-bottom">
         <div className="sidebar-metrics">
           <span className={`sidebar-dot ${daemonOk ? "sidebar-dot-ok" : "sidebar-dot-err"}`} />
+          {wsConnected && <span className="sidebar-live"><span className="sidebar-live-dot" />live</span>}
           <span className="sidebar-metric">{activeTasks} active</span>
           <span className="sidebar-metric-sep" />
           <span className="sidebar-metric">${Number(spent).toFixed(2)}</span>
