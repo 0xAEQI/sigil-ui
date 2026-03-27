@@ -1,5 +1,5 @@
 {
-  "name": "entity-business",
+  "name": "sigil-ui",
   "description": "Web dashboard for the Sigil AI agent orchestrator",
   "private": true,
   "version": "0.2.0",

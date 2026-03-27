@@ -40,13 +40,13 @@ Messages persist to localStorage (last 100). Session ID persists for conversatio
 ## Deployment
 
 ```bash
-npm run build                              # Vite production build
-sudo cp -r dist/* /var/www/entity-business/ # Deploy static files
+npm run build                         # Vite production build
+sudo cp -r dist/* /var/www/sigil-ui/  # Deploy static files
 ```
 
-Nginx at entity.business serves static SPA + proxies `/api/*` to sigil-web on `:8400`.
+Your reverse proxy should serve the static SPA and proxy `/api/*` to `sigil-web` on `:8400`.
 
-Services: `sigil-daemon.service` (daemon), `sigil-web.service` (API server)
+Services: `sigil.service` (daemon), `sigil-web.service` (API server)
 
 ## Dev
 
